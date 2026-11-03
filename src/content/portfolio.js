@@ -62,7 +62,7 @@ export const portfolio = {
       prologue: "/assets/photos/pondering.webp",
       portrait: "/assets/photos/portrait.webp",
       foundations: "/assets/photos/pendant.webp",
-      contact: "/assets/photos/sunlight.webp",
+      contact: "/assets/photos/suit.webp",
       closing: "/assets/photos/hyacinth.webp"
     }
   }

@@ -44,6 +44,19 @@ export function Cursor() {
       dot.current?.classList.toggle("cursor--hidden", hidden);
       ring.current?.classList.toggle("cursor--hidden", hidden);
     };
+    // Manga impact lines on click. Removed on animationend, with a timeout
+    // backstop since background tabs may never fire that event.
+    const onDown = (e) => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const burst = document.createElement("div");
+      burst.className = "cursor-burst";
+      burst.setAttribute("aria-hidden", "true");
+      burst.style.left = `${e.clientX}px`;
+      burst.style.top = `${e.clientY}px`;
+      burst.addEventListener("animationend", () => burst.remove());
+      setTimeout(() => burst.remove(), 600);
+      document.body.appendChild(burst);
+    };
     const onLeave = toggle(true);
     const onEnter = toggle(false);
     const tick = () => {
@@ -54,11 +67,13 @@ export function Cursor() {
     };
     frame = requestAnimationFrame(tick);
     window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerdown", onDown);
     document.addEventListener("pointerleave", onLeave);
     document.addEventListener("pointerenter", onEnter);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
       document.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("pointerenter", onEnter);
       root.classList.remove("custom-cursor");
@@ -70,7 +85,12 @@ export function Cursor() {
   return (
     <>
       <div ref={ring} className={`cursor cursor--${mode}`} aria-hidden="true">
-        <span className="cursor__ring" />
+        <span className="cursor__ring">
+          <svg viewBox="0 0 40 40">
+            <path className="cursor__enso" d="M30.93 6.98 A17 17 0 1 1 20 3" />
+            <path className="cursor__enso cursor__enso--bristle" d="M31.87 10.04 A15.5 15.5 0 1 1 5.43 14.7" />
+          </svg>
+        </span>
         {(mode === "next" || mode === "prev" || mode === "close") && <span className={`cursor__arrow cursor__arrow--${mode}`} />}
         {text && <span className="cursor__label">{text}</span>}
       </div>

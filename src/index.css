@@ -760,16 +760,42 @@ body {
   transition: width 200ms ease, height 200ms ease, background 200ms ease, border-color 200ms ease, opacity 200ms ease;
 }
 
+/* The ring is a brush-drawn ensō: one heavy stroke with a thin bristle trace,
+   left open at the top and slowly turning like wet ink settling. */
 .cursor__ring {
-  width: 26px;
-  height: 26px;
-  border: 1.5px solid rgba(236, 229, 211, 0.75);
+  width: 30px;
+  height: 30px;
+  color: rgba(236, 229, 211, 0.82);
+  transition: width 200ms ease, height 200ms ease, color 200ms ease, background 200ms ease, opacity 200ms ease;
+}
+
+.cursor__ring svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: enso-turn 14s linear infinite;
+  transition: filter 200ms ease;
+}
+
+.cursor__enso {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.cursor__enso--bristle {
+  stroke-width: 0.9;
+  opacity: 0.55;
 }
 
 .cursor__dot {
-  width: 5px;
-  height: 5px;
-  background: var(--washi);
+  width: 6px;
+  height: 6px;
+  background: var(--foil);
+  box-shadow: 0 0 6px rgba(201, 162, 74, 0.7);
 }
 
 .cursor--hidden {
@@ -777,44 +803,94 @@ body {
 }
 
 .cursor--ui .cursor__ring {
-  width: 36px;
-  height: 36px;
-  border-color: var(--glow);
+  width: 38px;
+  height: 38px;
+  color: var(--glow);
 }
 
 .cursor--book .cursor__ring,
 .cursor--open .cursor__ring {
-  width: 58px;
-  height: 58px;
-  border-color: var(--glow);
-  box-shadow: 0 0 22px rgba(62, 229, 154, 0.45);
+  width: 60px;
+  height: 60px;
+  color: var(--glow);
+}
+
+.cursor--book .cursor__ring svg,
+.cursor--open .cursor__ring svg {
+  filter: drop-shadow(0 0 8px rgba(62, 229, 154, 0.6));
 }
 
 .cursor--link .cursor__ring {
-  width: 40px;
-  height: 40px;
-  border-color: var(--glow);
-  background: rgba(62, 229, 154, 0.18);
+  width: 42px;
+  height: 42px;
+  color: var(--glow);
+  background: rgba(62, 229, 154, 0.14);
 }
 
 .cursor--next .cursor__ring,
 .cursor--prev .cursor__ring,
 .cursor--close .cursor__ring {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
+  color: var(--foil);
 }
 
 .cursor--grabbing .cursor__ring {
-  width: 30px;
-  height: 22px;
-  border-color: var(--glow);
+  width: 32px;
+  height: 24px;
+  color: var(--glow);
+}
+
+.cursor--grabbing .cursor__ring svg {
+  animation-play-state: paused;
 }
 
 .cursor--grab .cursor__ring {
-  width: 44px;
-  height: 44px;
-  border-style: dashed;
-  border-color: var(--glow);
+  width: 46px;
+  height: 46px;
+  color: var(--glow);
+}
+
+.cursor--grab .cursor__enso {
+  stroke-dasharray: 5 5;
+}
+
+@keyframes enso-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Click: a ring of manga speed lines that bursts outward and fades. */
+.cursor-burst {
+  position: fixed;
+  z-index: 99;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 6deg, var(--washi) 0deg 3deg, transparent 3deg 30deg);
+  -webkit-mask: radial-gradient(circle, transparent 38%, #000 40%, #000 62%, transparent 64%);
+  mask: radial-gradient(circle, transparent 38%, #000 40%, #000 62%, transparent 64%);
+  animation: cursor-burst 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cursor-burst {
+  from {
+    transform: scale(0.35);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor__ring svg {
+    animation: none;
+  }
 }
 
 .cursor__arrow {
