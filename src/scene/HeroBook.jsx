@@ -63,7 +63,10 @@ const smoothstep = (a, b, x) => {
 const textureFrom = (canvas, srgb) => {
   const texture = new CanvasTexture(canvas);
   if (srgb) texture.colorSpace = SRGBColorSpace;
-  texture.anisotropy = 8;
+  texture.anisotropy = 16;
+  texture.generateMipmaps = false;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
   texture.needsUpdate = true;
   return texture;
 };
@@ -252,10 +255,14 @@ export function HeroBook() {
   );
 
   const art = useMemo(() => {
-    const height = quality === "low" ? 1100 : 1600;
+    const height = 2048;
     const back = renderBackCoverArt(height);
     return { cover: renderCoverArt(height), spine: renderSpineArt(height), back };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    manager.setPageHeight(pageHeight);
+  }, [manager, pageHeight]);
 
   const parts = useMemo(() => {
     const leafGeometry = createLeafGeometry();

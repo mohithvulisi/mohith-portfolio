@@ -1155,6 +1155,8 @@ export const renderPage = (page, height) => {
   const W = Math.round(H * PAGE_ASPECT);
   const canvas = makeCanvas(W, H);
   const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   const g = { ctx, W, H, u: H / 1000, rand: seeded(page.index * 7919 + 101), page };
   paper(g);
   page.blocks.forEach((block) => {

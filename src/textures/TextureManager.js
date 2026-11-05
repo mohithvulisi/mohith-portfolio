@@ -29,10 +29,11 @@ const idle = (fn) => (window.requestIdleCallback ? window.requestIdleCallback(fn
 const toTexture = (canvas, renderer) => {
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  texture.anisotropy = renderer?.capabilities?.getMaxAnisotropy?.() ?? 4;
-  texture.minFilter = LinearMipmapLinearFilter;
+  const maxAniso = renderer?.capabilities?.getMaxAnisotropy?.() ?? 16;
+  texture.anisotropy = Math.max(maxAniso, 16);
+  texture.generateMipmaps = false;
+  texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
-  texture.generateMipmaps = true;
   texture.needsUpdate = true;
   return texture;
 };
@@ -40,7 +41,7 @@ const toTexture = (canvas, renderer) => {
 export class TextureManager {
   // canWork: background rendering waits while it returns false (a page is in
   // the air), so canvas work and uploads never compete with an animation.
-  constructor(book, { pageHeight = 1152, renderer = null, canWork = () => true } = {}) {
+  constructor(book, { pageHeight = 2048, renderer = null, canWork = () => true } = {}) {
     this.book = book;
     this.pageHeight = pageHeight;
     this.renderer = renderer;

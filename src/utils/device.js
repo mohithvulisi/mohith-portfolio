@@ -17,15 +17,14 @@ export const isMobile = () => isCoarsePointer() || /Android|iPhone|iPad|iPod/i.t
 
 // Resting resolution. The page textures carry the fine detail, so the canvas
 // itself does not need the full retina density to look crisp.
-export const maxDpr = () => Math.min(window.devicePixelRatio || 1, isMobile() ? 1.5 : 1.75);
+export const maxDpr = () => Math.min(window.devicePixelRatio || 1, 2);
 
 // "high" | "medium" | "low": decides page texture size, dust and baked shadows.
 // Chosen once at load; frame-rate dips only lower the canvas resolution.
 export const initialQuality = () => {
+  if (isMobile()) return "medium";
   const cores = navigator.hardwareConcurrency ?? 4;
-  const memory = navigator.deviceMemory ?? 4;
-  if (cores <= 4 || memory <= 2) return "low";
-  if (isMobile() || cores <= 6 || memory <= 4) return "medium";
+  if (cores <= 2) return "low";
   return "high";
 };
 
@@ -33,9 +32,9 @@ export const QUALITY_ORDER = ["low", "medium", "high"];
 
 export const qualitySettings = (tier) =>
   ({
-    high: { pageTexture: 1536, dust: 700, shadows: true },
-    medium: { pageTexture: 1280, dust: 450, shadows: true },
-    low: { pageTexture: 1024, dust: 200, shadows: false }
+    high: { pageTexture: 2048, dust: 700, shadows: true },
+    medium: { pageTexture: 2048, dust: 450, shadows: true },
+    low: { pageTexture: 1536, dust: 200, shadows: false }
   })[tier];
 
 export const storage = {
